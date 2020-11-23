@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import './App.css'
 import PokemonList from './components/PokemonList'
 import Pokemon from './components/Pokemon'
+import axios from 'axios'
 
 class App extends Component {
   constructor() {
@@ -21,11 +22,33 @@ class App extends Component {
     )
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.getPokemonList()
+  }
 
-  getPokemonList(e) {}
+  getPokemonList(e) {
+    e && e.preventDefault()
+    axios.get(`https://pokeapi.co/api/v2/pokemon?limit=${this.state.listLimit}`).then(res => { //this indicates we're making a 'Get' request to the server side; THEN, when it's done, do this; then takes a cb function
+      //console.log(res.data.results) first thing you want to do when calling a response is console log it so you can see the data that is returned and properly dig into it
+      this.setState ({
+        pokemonList: res.data.results
+    }) })
+  }
 
-  getSinglePokemon(e) {}
+  getSinglePokemon(e) {
+    e && e.preventDefault()
+    axios
+    .get(`https://pokeapi.co/api/v2/pokemon/${this.state.pokemonId}`)
+    .then((res) => { //when a request is denied on the server side, the 'then' doesn't happen & we 'catch' it
+      // console.log(res.data)
+      this.setState ({
+        singlePokemon: res.data
+      })
+    })
+    .catch((err) => {
+      alert('Pokemon does not exist')
+    })
+  }
 
   handlePokemonIdChange(e) {
     this.setState({
